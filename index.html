@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titanic Survival Prediction</title>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='images/titanic.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+    background-color: rgba(255, 255, 255, 0.1); /* More transparent */
+    border-radius: 10px;
+    padding: 40px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    backdrop-filter: blur(10px); /* Blurring the background behind the container */
+    border: 2px solid rgba(255, 255, 255, 0.2); /* Optional, for a subtle border */
+}
+
+
+        h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        label {
+            color: #ccc;
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #666;
+            border-radius: 5px;
+            background-color: #444;
+            color: #f0f0f0;
+        }
+
+        button {
+            background-color: #ffbf00;
+            color: #1a1a1a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #ffcf40;
+        }
+
+        #predictionResult {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #f0f0f0;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Titanic Survival Prediction</h2>
+        <form id="predictionForm" method="post" action="/predict">
+            <label for="pclass">Passenger Class (Pclass):</label>
+            <input type="text" id="pclass" name="pclass" placeholder="Enter 1, 2, or 3">
+
+            <label for="sex">Sex (0 for male, 1 for female):</label>
+            <input type="text" id="sex" name="sex" placeholder="Enter 0 for Male, 1 for Female">
+
+            <label for="age">Age:</label>
+            <input type="text" id="age" name="age" placeholder="Enter Age">
+
+            <label for="sibsp">Number of Siblings/Spouses (SibSp):</label>
+            <input type="text" id="sibsp" name="sibsp" placeholder="Enter number of siblings/spouses">
+
+            <label for="parch">Number of Parents/Children (Parch):</label>
+            <input type="text" id="parch" name="parch" placeholder="Enter number of parents/children">
+
+            <label for="fare">Fare:</label>
+            <input type="text" id="fare" name="fare" placeholder="Enter ticket fare">
+
+            <label for="embarked">Embarked (0 for S, 1 for C, 2 for Q):</label>
+            <input type="text" id="embarked" name="embarked" placeholder="Enter 0 for S, 1 for C, 2 for Q">
+
+            <button type="button" onclick="predictSurvival()">Predict</button>
+        </form>
+
+        <p id="predictionResult"></p>
+    </div>
+
+    <script>
+        function predictSurvival() {
+            var xhr = new XMLHttpRequest();
+            var url = "/predict";
+            var data = new FormData(document.getElementById("predictionForm"));
+
+            xhr.open("POST", url, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    document.getElementById("predictionResult").innerHTML = 
+                        response.prediction === 1 ? "Survived" : "Did not survive";
+                }
+            };
+            xhr.send(data);
+        }
+    </script>
+</body>
+</html>
